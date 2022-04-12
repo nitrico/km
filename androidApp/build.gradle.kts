@@ -4,24 +4,72 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = AndroidConfig.Sdk.compile
     defaultConfig {
-        applicationId = "dev.miguelmoreno.km.android"
-        minSdk = 23
-        targetSdk = 32
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = AndroidConfig.AppId
+        minSdk = AndroidConfig.Sdk.min
+        targetSdk = AndroidConfig.Sdk.target
+        versionCode = AndroidConfig.Version.code
+        versionName = AndroidConfig.Version.name
     }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
         }
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    lint {
+        warningsAsErrors = true
+        abortOnError = true
+    }
+    buildFeatures {
+        //compose = true
+        viewBinding = true
+    }
+    //composeOptions { kotlinCompilerExtensionVersion = AndroidX.Compose.version }
 }
 
 dependencies {
     implementation(project(":shared"))
-    implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+
+    with(AndroidX) {
+        implementation(activityCompose)
+        implementation(lifecycleViewmodelCompose)
+        implementation(activityKtx)
+        implementation(appcompat)
+        implementation(constraintlayout)
+        implementation(coreKtx)
+    }
+
+    /*with(AndroidX.Compose) {
+        implementation(animation)
+        implementation(ui)
+        implementation(uiTooling)
+        implementation(foundation)
+        implementation(material)
+        implementation(materialIconsCore)
+        implementation(materialIconsExtended)
+        androidTestImplementation(uiTestJunit4)
+    }*/
+
+    with(Coil) {
+        implementation(coil)
+        implementation(coilCompose)
+    }
+
+    with(Google) {
+        implementation(material)
+    }
+
+    with(Koin) {
+        implementation(core)
+        implementation(android)
+        testImplementation(test)
+    }
 }

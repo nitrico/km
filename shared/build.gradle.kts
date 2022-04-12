@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
+    kotlin("plugin.serialization")
     id("com.android.library")
 }
 
@@ -23,13 +24,32 @@ kotlin {
     }
     
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(Koin.core)
+                implementation(KotlinX.Coroutines.core)
+                implementation(KotlinX.datetime)
+                implementation(Ktor.clientCore)
+                implementation(Ktor.clientContentNegotiation)
+                implementation(Ktor.clientLogging)
+                implementation(Ktor.clientSerialization)
+                implementation(Ktor.serializationKotlinXJson)
+                api(TouchLab.kermit)
+                implementation(TouchLab.MultiplatformSettings.multiplatformSettings)
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidX.securityCrypto)
+                implementation(Koin.android)
+                implementation(Ktor.clientAndroid)
+            }
+        }
         val androidTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
@@ -39,6 +59,9 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation(Ktor.clientIos)
+            }
         }
         val iosX64Test by getting
         val iosArm64Test by getting
@@ -53,10 +76,10 @@ kotlin {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = AndroidConfig.Sdk.compile
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 23
-        targetSdk = 32
+        minSdk = AndroidConfig.Sdk.min
+        targetSdk = AndroidConfig.Sdk.target
     }
 }
