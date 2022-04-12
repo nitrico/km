@@ -5,6 +5,7 @@ plugins {
     id("com.android.library")
 }
 
+// CocoaPods requires the podspec to have a version.
 version = "1.0"
 
 kotlin {

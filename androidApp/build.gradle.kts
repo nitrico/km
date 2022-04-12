@@ -29,10 +29,12 @@ android {
         abortOnError = true
     }
     buildFeatures {
-        //compose = true
+        compose = true
         viewBinding = true
     }
-    //composeOptions { kotlinCompilerExtensionVersion = AndroidX.Compose.version }
+    composeOptions {
+        kotlinCompilerExtensionVersion = AndroidX.Compose.version
+    }
 }
 
 dependencies {
@@ -47,7 +49,7 @@ dependencies {
         implementation(coreKtx)
     }
 
-    /*with(AndroidX.Compose) {
+    with(AndroidX.Compose) {
         implementation(animation)
         implementation(ui)
         implementation(uiTooling)
@@ -56,7 +58,7 @@ dependencies {
         implementation(materialIconsCore)
         implementation(materialIconsExtended)
         androidTestImplementation(uiTestJunit4)
-    }*/
+    }
 
     with(Coil) {
         implementation(coil)
