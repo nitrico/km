@@ -6,7 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
 
 fun interface Reducer {
@@ -18,18 +19,22 @@ interface Action : Reducer, KoinComponent {
 }
 
 object Store {
+    private val logger = Logger.withTag("Store")
+    private val mutex = Mutex()
+
+    private val storeScope = CoroutineScope(Dispatchers.Main)
+    private val effectScope = CoroutineScope(Dispatchers.Main)
+
     private val _state = MutableStateFlow(State())
     val state = _state.asStateFlow()
 
-    private val effectScope = CoroutineScope(Dispatchers.Main)
-
-    private val logger = Logger.withTag("Store")
-
     fun dispatch(action: Action) {
-        runBlocking {
-            logger.d { "Dispatching $action" }
-            _state.emit(action.reduce(state.value))
-            logger.d { "New state: ${state.value}" }
+        storeScope.launch {
+            mutex.withLock {
+                logger.d { "Dispatching $action" }
+                _state.emit(action.reduce(state.value))
+                logger.d { "New state: ${state.value}" }
+            }
         }
         effectScope.launch {
             action.sideEffect()

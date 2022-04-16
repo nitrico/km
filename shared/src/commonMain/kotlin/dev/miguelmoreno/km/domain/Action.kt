@@ -33,9 +33,10 @@ data class ConnectToStrava(private val authorizationCode: String) : Action {
         return state.copy(isLoading = true)
     }
     override suspend fun sideEffect() {
-        stravaApiConnectionManager.authorize(authorizationCode)
-        dispatch(LoadUser)
-        dispatch(LoadRuns)
+        stravaApiConnectionManager.authorize(authorizationCode) {
+            dispatch(LoadUser)
+            dispatch(LoadRuns)
+        }
     }
 }
 
@@ -46,8 +47,9 @@ object DisconnectFromStrava : Action {
         return state.copy(user = null, isLoading = true)
     }
     override suspend fun sideEffect() {
-        stravaApiConnectionManager.deauthorize()
-        dispatch(Disconnected)
+        stravaApiConnectionManager.deauthorize {
+            dispatch(Disconnected)
+        }
     }
 }
 

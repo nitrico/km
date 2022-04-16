@@ -21,12 +21,13 @@ object AndroidX {
 }
 
 object Coil {
-    const val coil = "io.coil-kt:coil:2.0.0-rc03"
-    const val coilCompose = "io.coil-kt:coil-compose:2.0.0-rc03"
+    private const val version = "2.0.0-rc03"
+    const val coil = "io.coil-kt:coil:$version"
+    const val coilCompose = "io.coil-kt:coil-compose:$version"
 }
 
 object Google {
-    const val material = "com.google.android.material:material:1.5.0"
+    const val material = "com.google.android.material:material:1.6.0-beta01"
 }
 
 object Koin { // https://insert-koin.io/docs/setup/v3.2
