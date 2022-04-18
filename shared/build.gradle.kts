@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
 plugins {
@@ -98,8 +99,8 @@ buildkonfig {
         buildConfigField(
             STRING,
             "STRAVA_CLIENT_SECRET",
-            findProperty("STRAVA_CLIENT_SECRET") as? String
-                ?: throw Exception("STRAVA_CLIENT_SECRET is not set")
+            gradleLocalProperties(rootDir).getProperty("STRAVA_CLIENT_SECRET")
+                ?: throw Exception("STRAVA_CLIENT_SECRET not defined in local.properties")
         )
     }
 }
