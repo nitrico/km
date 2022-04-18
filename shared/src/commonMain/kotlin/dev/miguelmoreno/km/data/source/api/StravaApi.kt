@@ -3,7 +3,6 @@ package dev.miguelmoreno.km.data.source.api
 import co.touchlab.kermit.Logger
 import dev.miguelmoreno.km.BuildKonfig
 import dev.miguelmoreno.km.data.Token
-import dev.miguelmoreno.km.data.toUser
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

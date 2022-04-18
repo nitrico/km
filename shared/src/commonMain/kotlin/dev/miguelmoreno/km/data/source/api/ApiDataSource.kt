@@ -2,16 +2,12 @@ package dev.miguelmoreno.km.data.source.api
 
 import dev.miguelmoreno.km.data.Run
 import dev.miguelmoreno.km.data.User
-import dev.miguelmoreno.km.data.toUser
 import kotlinx.datetime.*
 
 class ApiDataSource(private val stravaApi: StravaApi) {
 
-    suspend fun getUser(accessToken: String, refreshToken: String): User {
-        val athlete = stravaApi.getAthlete()
-        val userApiModel = UserApiModel(accessToken, refreshToken, athlete)
-        return userApiModel.toUser()
-    }
+    suspend fun getUser(accessToken: String, refreshToken: String): User =
+        stravaApi.getAthlete().toUser(accessToken, refreshToken)
 
     // TODO: PAGING is missing!
     suspend fun getRuns(): List<Run> = runCatching {

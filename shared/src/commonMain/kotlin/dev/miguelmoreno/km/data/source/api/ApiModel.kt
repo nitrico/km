@@ -1,6 +1,8 @@
 package dev.miguelmoreno.km.data.source.api
 
 import dev.miguelmoreno.km.data.Run
+import dev.miguelmoreno.km.data.Token
+import dev.miguelmoreno.km.data.User
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -39,6 +41,16 @@ data class UserApiModel(
     val athlete: AthleteApiModel
 )
 
+fun UserApiModel.toUser() = User(
+    id = athlete.id,
+    username = athlete.username,
+    accessToken = Token(accessToken),
+    refreshToken = Token(refreshToken),
+    firstName = athlete.firstName,
+    lastName = athlete.lastName,
+    profilePicture = athlete.profile
+)
+
 @Serializable
 data class AthleteApiModel(
     val id: String,
@@ -47,6 +59,13 @@ data class AthleteApiModel(
     @SerialName("lastname") val lastName: String,
     val profile: String,
 )
+
+fun AthleteApiModel.toUser(accessToken: String, refreshToken: String): User =
+    UserApiModel(
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+        athlete = this
+    ).toUser()
 
 @Serializable
 data class RefreshTokenResponseApiModel(

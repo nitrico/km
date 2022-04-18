@@ -2,7 +2,6 @@ package dev.miguelmoreno.km.data
 
 import dev.miguelmoreno.km.data.source.api.ApiDataSource
 import dev.miguelmoreno.km.data.source.api.UserAccountStore
-import dev.miguelmoreno.km.data.source.api.UserApiModel
 import kotlin.jvm.JvmInline
 
 class UserRepository(
@@ -38,16 +37,6 @@ data class User(
 value class Token(val value: String) {
     override fun toString(): String = "t0k€n"
 }
-
-fun UserApiModel.toUser() = User(
-    id = athlete.id,
-    username = athlete.username,
-    accessToken = Token(accessToken),
-    refreshToken = Token(refreshToken),
-    firstName = athlete.firstName,
-    lastName = athlete.lastName,
-    profilePicture = athlete.profile
-)
 
 /*
 $ http GET "https://www.strava.com/api/v3/athlete" "Authorization: Bearer [[token]]"
