@@ -95,16 +95,11 @@ class StravaApi(
         okBlock: suspend HttpResponse.() -> T
     ): T = when (status) {
         HttpStatusCode.OK -> okBlock()
-        HttpStatusCode.Unauthorized -> refreshTokenAndRetry(httpRequest, okBlock)
+        HttpStatusCode.Unauthorized -> {
+            refreshToken()
+            httpRequest.execute(okBlock)
+        }
         else -> stravaApiError(status)
-    }
-
-    private suspend  fun <T> refreshTokenAndRetry(
-        request: HttpRequestBuilder,
-        okBlock: suspend HttpResponse.() -> T
-    ): T {
-        refreshToken()
-        return httpClient.request(request).handle(request, okBlock)
     }
 
     private fun stravaApiError(code: HttpStatusCode): Nothing =
