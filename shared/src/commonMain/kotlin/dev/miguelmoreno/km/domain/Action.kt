@@ -4,22 +4,24 @@ import dev.miguelmoreno.km.data.Run
 import dev.miguelmoreno.km.data.RunsRepository
 import dev.miguelmoreno.km.data.User
 import dev.miguelmoreno.km.data.UserRepository
-import dev.miguelmoreno.km.data.source.api.StravaApiConnectionManager
+import dev.miguelmoreno.km.data.source.api.StravaApi
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-object LoadUser : Action {
+object LoadUser : Action, KoinComponent {
     private val userRepository by inject<UserRepository>()
 
     override fun reduce(state: State): State {
         return state.copy(isLoading = true)
     }
-    override suspend fun sideEffect() {
+
+    override suspend fun effect() {
         val user = userRepository.getUser()
-        dispatch(UserLoaded(user))
+        store.dispatch(UserLoaded(user))
     }
 }
 
-class UserLoaded(private val user: User?) : Action {
+data class UserLoaded(private val user: User?) : Action {
 
     override fun reduce(state: State): State {
         return state.copy(user = user, isLoading = false)
@@ -27,28 +29,28 @@ class UserLoaded(private val user: User?) : Action {
 }
 
 data class ConnectToStrava(private val authorizationCode: String) : Action {
-    private val stravaApiConnectionManager by inject<StravaApiConnectionManager>()
+    private val stravaApi by inject<StravaApi>()
 
     override fun reduce(state: State): State {
         return state.copy(isLoading = true)
     }
-    override suspend fun sideEffect() {
-        stravaApiConnectionManager.authorize(authorizationCode) {
-            dispatch(LoadUser)
-            dispatch(LoadRuns)
+    override suspend fun effect() {
+        stravaApi.authorize(authorizationCode) {
+            store.dispatch(LoadUser)
+            store.dispatch(LoadRuns)
         }
     }
 }
 
 object DisconnectFromStrava : Action {
-    private val stravaApiConnectionManager by inject<StravaApiConnectionManager>()
+    private val stravaApi by inject<StravaApi>()
 
     override fun reduce(state: State): State {
         return state.copy(user = null, isLoading = true)
     }
-    override suspend fun sideEffect() {
-        stravaApiConnectionManager.deauthorize {
-            dispatch(Disconnected)
+    override suspend fun effect() {
+        stravaApi.deauthorize {
+            store.dispatch(Disconnected)
         }
     }
 }
@@ -63,9 +65,9 @@ object LoadRuns : Action {
     override fun reduce(state: State): State {
         return state.copy(isLoading = true)
     }
-    override suspend fun sideEffect() {
+    override suspend fun effect() {
         val runs = runsRepository.getRuns()
-        dispatch(RunsLoaded(runs))
+        store.dispatch(RunsLoaded(runs))
     }
 }
 

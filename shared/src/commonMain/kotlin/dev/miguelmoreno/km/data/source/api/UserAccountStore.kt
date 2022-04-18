@@ -1,6 +1,7 @@
 package dev.miguelmoreno.km.data.source.api
 
 import com.russhwolf.settings.Settings
+import dev.miguelmoreno.km.data.Token
 import dev.miguelmoreno.km.data.User
 
 class UserAccountStore(
@@ -14,8 +15,8 @@ class UserAccountStore(
                 firstName = getString(USER_FIRST_NAME),
                 lastName = getString(USER_LAST_NAME),
                 profilePicture = getString(USER_PROFILE_PICTURE),
-                accessToken = getStringOrNull(ACCESS_TOKEN) ?: return null,
-                refreshToken = getStringOrNull(REFRESH_TOKEN) ?: return null
+                accessToken = Token(getStringOrNull(ACCESS_TOKEN) ?: return null),
+                refreshToken = Token(getStringOrNull(REFRESH_TOKEN) ?: return null)
             )
         }
 
@@ -25,8 +26,8 @@ class UserAccountStore(
         putString(USER_FIRST_NAME, user.firstName)
         putString(USER_LAST_NAME, user.lastName)
         putString(USER_PROFILE_PICTURE, user.profilePicture)
-        putString(ACCESS_TOKEN, user.accessToken)
-        putString(REFRESH_TOKEN, user.refreshToken)
+        putString(ACCESS_TOKEN, user.accessToken.value)
+        putString(REFRESH_TOKEN, user.refreshToken.value)
     }
 
     fun clearUserData() {

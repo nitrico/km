@@ -1,8 +1,12 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     kotlin("plugin.serialization")
     id("com.android.library")
+    id("com.codingfeline.buildkonfig")
+    id("com.github.ben-manes.versions") // ./gradlew dependencyUpdates -Drevision=release
 }
 
 // CocoaPods requires the podspec to have a version.
@@ -17,7 +21,7 @@ kotlin {
     cocoapods {
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
-        ios.deploymentTarget = "14.1"
+        ios.deploymentTarget = "15.0"
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "shared"
@@ -30,11 +34,13 @@ kotlin {
                 implementation(Koin.core)
                 implementation(KotlinX.Coroutines.core)
                 implementation(KotlinX.datetime)
-                implementation(Ktor.clientCore)
-                implementation(Ktor.clientContentNegotiation)
-                implementation(Ktor.clientLogging)
-                implementation(Ktor.clientSerialization)
-                implementation(Ktor.serializationKotlinXJson)
+                with(Ktor) {
+                    implementation(clientCore)
+                    implementation(clientContentNegotiation)
+                    implementation(clientLogging)
+                    implementation(clientSerialization)
+                    implementation(serializationKotlinXJson)
+                }
                 api(TouchLab.kermit)
                 implementation(TouchLab.MultiplatformSettings.multiplatformSettings)
             }
@@ -82,5 +88,18 @@ android {
     defaultConfig {
         minSdk = AndroidConfig.Sdk.min
         targetSdk = AndroidConfig.Sdk.target
+    }
+}
+
+buildkonfig {
+    packageName = "dev.miguelmoreno.km"
+
+    defaultConfigs {
+        buildConfigField(
+            STRING,
+            "STRAVA_CLIENT_SECRET",
+            findProperty("STRAVA_CLIENT_SECRET") as? String
+                ?: throw Exception("STRAVA_CLIENT_SECRET is not set")
+        )
     }
 }

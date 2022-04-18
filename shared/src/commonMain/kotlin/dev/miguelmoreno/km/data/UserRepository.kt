@@ -3,6 +3,7 @@ package dev.miguelmoreno.km.data
 import dev.miguelmoreno.km.data.source.api.ApiDataSource
 import dev.miguelmoreno.km.data.source.api.UserAccountStore
 import dev.miguelmoreno.km.data.source.api.UserApiModel
+import kotlin.jvm.JvmInline
 
 class UserRepository(
     private val apiDataSource: ApiDataSource,
@@ -13,7 +14,7 @@ class UserRepository(
         //try {
         if (user != null) {
             // refresh
-            user = apiDataSource.getUser(user.accessToken, user.refreshToken)
+            user = apiDataSource.getUser(user.accessToken.value, user.refreshToken.value)
             userAccountStore.save(user)
         }
         //} catch (exception: Exception) {
@@ -29,15 +30,20 @@ data class User(
     val firstName: String,
     val lastName: String,
     val profilePicture: String,
-    val accessToken: String,
-    val refreshToken: String,
+    val accessToken: Token,
+    val refreshToken: Token,
 )
+
+@JvmInline
+value class Token(val value: String) {
+    override fun toString(): String = "t0k€n"
+}
 
 fun UserApiModel.toUser() = User(
     id = athlete.id,
     username = athlete.username,
-    accessToken = accessToken,
-    refreshToken = refreshToken,
+    accessToken = Token(accessToken),
+    refreshToken = Token(refreshToken),
     firstName = athlete.firstName,
     lastName = athlete.lastName,
     profilePicture = athlete.profile

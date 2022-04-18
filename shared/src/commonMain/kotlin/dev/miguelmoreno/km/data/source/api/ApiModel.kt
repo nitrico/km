@@ -48,6 +48,12 @@ data class AthleteApiModel(
     val profile: String,
 )
 
+@Serializable
+data class RefreshTokenResponseApiModel(
+    @SerialName("access_token") val accessToken: String,
+    @SerialName("refresh_token") val refreshToken: String
+)
+
 /**
  * Copied and modified from [kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer]
  * The only difference is to remove the 'Z' at the end

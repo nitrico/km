@@ -26,6 +26,11 @@ object Coil {
     const val coilCompose = "io.coil-kt:coil-compose:$version"
 }
 
+object GradlePlugins {
+    const val buildKonfig = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.11.0"
+    const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.42.0"
+}
+
 object Google {
     const val material = "com.google.android.material:material:1.6.0-beta01"
 }
@@ -35,6 +40,10 @@ object Koin { // https://insert-koin.io/docs/setup/v3.2
     const val core = "io.insert-koin:koin-core:$version"
     const val android = "io.insert-koin:koin-android:$version"
     const val test = "io.insert-koin:koin-test:$version"
+}
+
+object Kotlin {
+    const val version = "1.6.10"
 }
 
 object KotlinX {

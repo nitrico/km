@@ -1,11 +1,13 @@
 package dev.miguelmoreno.km.di
 
+import dev.miguelmoreno.km.Store
 import dev.miguelmoreno.km.data.RunsRepository
 import dev.miguelmoreno.km.data.UserRepository
 import dev.miguelmoreno.km.data.source.api.ApiDataSource
 import dev.miguelmoreno.km.data.source.api.StravaApi
-import dev.miguelmoreno.km.data.source.api.StravaApiConnectionManager
 import dev.miguelmoreno.km.data.source.api.UserAccountStore
+import dev.miguelmoreno.km.domain.LoggerMiddleWare
+import dev.miguelmoreno.km.domain.State
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
@@ -28,11 +30,11 @@ fun initKoin(enableNetworkLogs: Boolean = true, appDeclaration: KoinAppDeclarati
 fun commonModule(enableNetworkLogs: Boolean) = module {
     single { httpClient(enableNetworkLogs) }
     single { UserAccountStore(settings = get()) }
-    single { StravaApiConnectionManager(httpClient = get(), userAccountStore = get()) }
-    single { StravaApi(httpClient = get(), stravaApiConnectionManager = get(), userAccountStore = get()) }
+    single { StravaApi(httpClient = get(), userAccountStore = get()) }
     single { ApiDataSource(stravaApi = get())}
     single { UserRepository(apiDataSource = get(), userAccountStore = get()) }
     single { RunsRepository(apiDataSource = get()) }
+    single { store() }
 }
 
 private fun httpClient(enableNetworkLogs: Boolean) =
@@ -46,9 +48,16 @@ private fun httpClient(enableNetworkLogs: Boolean) =
         if (enableNetworkLogs) {
             install(Logging) {
                 logger = Logger.DEFAULT
-                level = LogLevel.INFO
+                level = LogLevel.ALL
             }
         }
     }
+
+private fun store() = Store(
+    initialState = State(),
+    middleware = listOf(
+        LoggerMiddleWare()
+    )
+)
 
 expect fun platformModule(): Module

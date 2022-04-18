@@ -10,34 +10,38 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import coil.transform.CircleCropTransformation
+import dev.miguelmoreno.km.Store
 import dev.miguelmoreno.km.android.databinding.ActivityMainBinding
-import dev.miguelmoreno.km.data.source.api.StravaApiConnectionManager
+import dev.miguelmoreno.km.data.source.api.StravaApi
 import dev.miguelmoreno.km.domain.*
-import dev.miguelmoreno.km.domain.Store.dispatch
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), KoinComponent {
 
     private lateinit var binding: ActivityMainBinding
+
+    private val store: Store<State, Action> by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dispatch(LoadUser)
-        dispatch(LoadRuns)
+        store.dispatch(LoadUser)
+        store.dispatch(LoadRuns)
 
         binding.signIn.setOnClickListener {
             startConnection()
         }
 
         binding.logOut.setOnClickListener {
-            dispatch(DisconnectFromStrava)
+            store.dispatch(DisconnectFromStrava)
         }
 
         lifecycleScope.launch {
-            Store.state.flowWithLifecycle(lifecycle, STARTED).collect {
+            store.state.flowWithLifecycle(lifecycle, STARTED).collect {
                 binding.bindState(it)
             }
         }
@@ -47,12 +51,12 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         val code = intent?.data?.getQueryParameter("code")
         if (code != null) {
-            dispatch(ConnectToStrava(code))
+            store.dispatch(ConnectToStrava(code))
         }
     }
 
     private fun startConnection() {
-        val uri = Uri.parse(StravaApiConnectionManager.URL_AUTHORIZE)
+        val uri = Uri.parse(StravaApi.URL_AUTHORIZE)
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)
     }
