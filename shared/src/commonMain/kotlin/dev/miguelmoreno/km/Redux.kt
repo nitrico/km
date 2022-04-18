@@ -44,11 +44,9 @@ class Store<State, Action : AbsAction<State>>(
 
     fun dispatch(action: Action) {
         storeScope.launch {
-            //val newAction = applyMiddleware(action)
+            val newAction = applyMiddleware(action)
             mutex.withLock {
-                //logger.d { "Dispatching $action" }
-                _state.emit(action.reduce(state.value))
-                //logger.d { "New state: ${state.value}" }
+                _state.emit(newAction.reduce(state.value))
             }
         }
         effectScope.launch {
@@ -57,7 +55,7 @@ class Store<State, Action : AbsAction<State>>(
     }
 
     private fun applyMiddleware(action: Action): Action {
-        return next(0)(state.value, action, ::dispatch)
+        return next(0).invoke(state.value, action, ::dispatch)
     }
 
     private fun next(index: Int): Next<State, Action> {
