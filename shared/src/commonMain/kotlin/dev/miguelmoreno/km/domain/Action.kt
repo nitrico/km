@@ -5,10 +5,9 @@ import dev.miguelmoreno.km.data.RunsRepository
 import dev.miguelmoreno.km.data.User
 import dev.miguelmoreno.km.data.UserRepository
 import dev.miguelmoreno.km.data.source.api.StravaApi
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-object LoadUser : Action, KoinComponent {
+object LoadUser : Action {
     private val userRepository by inject<UserRepository>()
 
     override fun reduce(state: State): State {

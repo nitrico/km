@@ -100,7 +100,7 @@ buildkonfig {
             STRING,
             "STRAVA_CLIENT_SECRET",
             gradleLocalProperties(rootDir).getProperty("STRAVA_CLIENT_SECRET")
-                ?: throw Exception("STRAVA_CLIENT_SECRET not defined in local.properties")
+                ?: throw Exception("STRAVA_CLIENT_SECRET not found in local.properties")
         )
     }
 }

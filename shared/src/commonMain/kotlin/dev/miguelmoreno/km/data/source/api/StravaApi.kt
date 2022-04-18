@@ -50,7 +50,7 @@ class StravaApi(
 
     suspend fun authorize(authorizationCode: String, callback: () -> Unit = {}) = request {
         method = HttpMethod.Post
-        url(URL_REFRESH_TOKEN)
+        url(URL_AUTH_TOKEN)
         parameter("client_id", CLIENT_ID)
         parameter("client_secret", CLIENT_SECRET)
         parameter("code", authorizationCode)
@@ -63,7 +63,7 @@ class StravaApi(
 
     suspend fun deauthorize(callback: () -> Unit = {}) = request {
         method = HttpMethod.Post
-        url("https://www.strava.com/oauth/deauthorize")
+        url(URL_AUTH_DEAUTHORIZE)
         parameter("access_token", accessToken)
     }.execute {
         userAccountStore.clearUserData()
@@ -72,15 +72,14 @@ class StravaApi(
 
     private suspend fun refreshToken() = request {
         method = HttpMethod.Post
-        url(URL_REFRESH_TOKEN)
+        url(URL_AUTH_TOKEN)
         parameter("client_id", CLIENT_ID)
         parameter("client_secret", CLIENT_SECRET)
         parameter("grant_type", "refresh_token")
         parameter("refresh_token", userAccountStore.user?.refreshToken?.value)
     }.execute {
-        val storedUser = requireNotNull(userAccountStore.user)
         val tokens = body<RefreshTokenResponseApiModel>()
-        val user = storedUser.copy(
+        val user = requireNotNull(userAccountStore.user).copy(
             accessToken = Token(tokens.accessToken),
             refreshToken = Token(tokens.refreshToken)
         )
@@ -109,15 +108,18 @@ class StravaApi(
     }
 
     private fun stravaApiError(code: HttpStatusCode): Nothing =
-        throw StravaApiException("${code.value} ${code.description}")
+        throw RequestException("${code.value} ${code.description}")
+
+    class RequestException(override val message: String? = null) : Exception(message)
 
     companion object {
         private const val URL_REQUEST_ATHLETE = "https://www.strava.com/api/v3/athlete"
         private const val URL_REQUEST_ACTIVITIES = "https://www.strava.com/api/v3/athlete/activities"
+        private const val URL_AUTH_TOKEN = "https://www.strava.com/oauth/token"
+        private const val URL_AUTH_DEAUTHORIZE = "https://www.strava.com/oauth/deauthorize"
 
         private const val CLIENT_ID = "80376"
         private val CLIENT_SECRET = BuildKonfig.STRAVA_CLIENT_SECRET
-        private const val URL_REFRESH_TOKEN = "https://www.strava.com/oauth/token"
         private const val REFRESH_TOKEN_MAX_ATTEMPTS = 3
         private const val REDIRECT_URI = "https://km1000.miguelmoreno.dev"
         private const val SCOPE = "read,read_all,profile:read_all,activity:read,activity:read_all"
@@ -130,5 +132,3 @@ class StravaApi(
                 "&scope=$SCOPE"
     }
 }
-
-class StravaApiException(override val message: String? = null) : Exception(message)
