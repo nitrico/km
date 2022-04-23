@@ -1,16 +1,12 @@
 package dev.miguelmoreno.km.domain
 
 import co.touchlab.kermit.Logger
-import dev.miguelmoreno.km.*
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import dev.miguelmoreno.km.Dispatch
+import dev.miguelmoreno.km.Middleware
+import dev.miguelmoreno.km.Next
 
-interface Action : AbsAction<State>, KoinComponent {
-    val store: Store<State, Action>
-        get() = get()
-}
+class LoggerMiddleware : Middleware<State, Action> {
 
-class LoggerMiddleWare : MiddleWare<State, Action> {
     private val logger = Logger.withTag("LoggerMiddleWare")
 
     override fun invoke(

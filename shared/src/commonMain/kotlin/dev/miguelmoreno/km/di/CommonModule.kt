@@ -6,7 +6,7 @@ import dev.miguelmoreno.km.data.UserRepository
 import dev.miguelmoreno.km.data.source.api.ApiDataSource
 import dev.miguelmoreno.km.data.source.api.StravaApi
 import dev.miguelmoreno.km.data.source.api.UserAccountStore
-import dev.miguelmoreno.km.domain.LoggerMiddleWare
+import dev.miguelmoreno.km.domain.LoggerMiddleware
 import dev.miguelmoreno.km.domain.State
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -56,7 +56,7 @@ private fun httpClient(enableNetworkLogs: Boolean) =
 private fun store() = Store(
     initialState = State(),
     middleware = listOf(
-        LoggerMiddleWare()
+        LoggerMiddleware()
     )
 )
 

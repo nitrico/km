@@ -30,7 +30,6 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = AndroidX.Compose.version
@@ -42,11 +41,6 @@ dependencies {
 
     with(AndroidX) {
         implementation(activityCompose)
-        implementation(lifecycleViewmodelCompose)
-        implementation(activityKtx)
-        implementation(appcompat)
-        implementation(constraintlayout)
-        implementation(coreKtx)
     }
 
     with(AndroidX.Compose) {
@@ -54,19 +48,14 @@ dependencies {
         implementation(ui)
         implementation(uiTooling)
         implementation(foundation)
-        implementation(material)
+        implementation(material3)
         implementation(materialIconsCore)
         implementation(materialIconsExtended)
         androidTestImplementation(uiTestJunit4)
     }
 
     with(Coil) {
-        implementation(coil)
         implementation(coilCompose)
-    }
-
-    with(Google) {
-        implementation(material)
     }
 
     with(Koin) {

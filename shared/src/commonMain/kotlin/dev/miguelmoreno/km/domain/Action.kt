@@ -1,11 +1,20 @@
 package dev.miguelmoreno.km.domain
 
+import dev.miguelmoreno.km.AbsAction
+import dev.miguelmoreno.km.Store
 import dev.miguelmoreno.km.data.Run
 import dev.miguelmoreno.km.data.RunsRepository
 import dev.miguelmoreno.km.data.User
 import dev.miguelmoreno.km.data.UserRepository
 import dev.miguelmoreno.km.data.source.api.StravaApi
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
+
+interface Action : AbsAction<State>, KoinComponent {
+    val store: Store<State, Action>
+        get() = get()
+}
 
 object LoadUser : Action {
     private val userRepository by inject<UserRepository>()

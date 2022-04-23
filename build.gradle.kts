@@ -6,7 +6,7 @@ buildscript {
     }
     val kotlinVersion: String by project
     dependencies {
-        classpath("com.android.tools.build:gradle:7.2.0-beta04")
+        classpath("com.android.tools.build:gradle:7.2.0-rc01")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
 

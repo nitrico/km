@@ -8,7 +8,7 @@
         android:allowBackup="false"
         android:name=".App"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme">
 
         <activity
             android:name=".MainActivity"

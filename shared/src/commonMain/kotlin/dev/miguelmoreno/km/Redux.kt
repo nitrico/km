@@ -16,7 +16,7 @@ interface AbsAction<State> {
 
 typealias Dispatch<Action> = (action: Action) -> Unit
 
-fun interface MiddleWare<State, Action : AbsAction<State>> {
+fun interface Middleware<State, Action : AbsAction<State>> {
     operator fun invoke(
         state: State,
         action: Action,
@@ -31,7 +31,7 @@ fun interface Next<State, Action : AbsAction<State>> {
 
 class Store<State, Action : AbsAction<State>>(
     initialState: State,
-    private val middleware: List<MiddleWare<State, Action>> = emptyList()
+    private val middleware: List<Middleware<State, Action>> = emptyList()
 ) {
     private val logger = Logger.withTag("Store")
     private val mutex = Mutex()

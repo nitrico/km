@@ -1,17 +1,19 @@
+import org.gradle.api.JavaVersion
+
 object AndroidX {
     const val activityCompose = "androidx.activity:activity-compose:1.4.0"
-    const val lifecycleViewmodelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
-    const val activityKtx = "androidx.activity:activity-ktx:1.6.0-alpha01"
-    const val appcompat = "androidx.appcompat:appcompat:1.4.1"
-    const val constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.3"
-    const val coreKtx = "androidx.core:core-ktx:1.7.0"
+    //const val lifecycleViewmodelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
+    //const val activityKtx = "androidx.activity:activity-ktx:1.6.0-alpha01"
+    //const val appcompat = "androidx.appcompat:appcompat:1.4.1"
+    //const val constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.3"
+    //const val coreKtx = "androidx.core:core-ktx:1.7.0"
     const val securityCrypto = "androidx.security:security-crypto:1.0.0" // for EncryptedSharedPreferences
 
     object Compose {
-        const val version = "1.1.1"
+        const val version = "1.2.0-alpha08"
         const val animation = "androidx.compose.animation:animation:${version}"
         const val foundation = "androidx.compose.foundation:foundation:${version}"
-        const val material = "androidx.compose.material:material:${version}"
+        const val material3 = "androidx.compose.material3:material3:1.0.0-alpha10"
         const val materialIconsCore = "androidx.compose.material:material-icons-core:${version}"
         const val materialIconsExtended = "androidx.compose.material:material-icons-extended:${version}"
         const val ui = "androidx.compose.ui:ui:${version}"
@@ -21,9 +23,7 @@ object AndroidX {
 }
 
 object Coil {
-    private const val version = "2.0.0-rc03"
-    const val coil = "io.coil-kt:coil:$version"
-    const val coilCompose = "io.coil-kt:coil-compose:$version"
+    const val coilCompose = "io.coil-kt:coil-compose:2.0.0-rc03"
 }
 
 object GradlePlugins {
@@ -31,19 +31,13 @@ object GradlePlugins {
     const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.42.0"
 }
 
-object Google {
-    const val material = "com.google.android.material:material:1.6.0-beta01"
-}
+val Java = JavaVersion.VERSION_1_8
 
 object Koin { // https://insert-koin.io/docs/setup/v3.2
     private const val version = "3.1.6"
     const val core = "io.insert-koin:koin-core:$version"
     const val android = "io.insert-koin:koin-android:$version"
     const val test = "io.insert-koin:koin-test:$version"
-}
-
-object Kotlin {
-    const val version = "1.6.10"
 }
 
 object KotlinX {
