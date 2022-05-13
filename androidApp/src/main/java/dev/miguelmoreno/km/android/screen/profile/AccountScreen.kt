@@ -1,33 +1,33 @@
-package dev.miguelmoreno.km.android
+package dev.miguelmoreno.km.android.screen.profile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
-import dev.miguelmoreno.km.Store
-import dev.miguelmoreno.km.domain.Action
+import com.ramcosta.composedestinations.annotation.Destination
 import dev.miguelmoreno.km.domain.DisconnectFromStrava
-import dev.miguelmoreno.km.domain.State
+import dev.miguelmoreno.km.domain.Store
+import org.koin.androidx.compose.get
 
+//@Destination
 @Composable
-fun MainScreen(
-    store: Store<State, Action>,
-    onSignInButtonClicked: () -> Unit,
+fun AccountScreen(
     modifier: Modifier = Modifier
 ) {
-    val state = store.state.collectAsState()
+    val store = get<Store>()
+    val state by store.state.collectAsState()
 
     Column(
         modifier = modifier
     ) {
-        state.value.user?.let { user ->
+        state.user?.let { user ->
             AsyncImage(
                 model = user.profilePicture,
                 //placeholder = painterResource(R.drawable.placeholder),
@@ -39,19 +39,9 @@ fun MainScreen(
             Text(text = user.username)
             Text(text = user.firstName)
             Text(text = user.lastName)
-            Text(text = state.value.distance.toString())
+            Text(text = state.distance.toString())
             Button(onClick = { store.dispatch(DisconnectFromStrava) }) {
                 Text(text = "Log out")
-            }
-        }
-
-        if (state.value.isLoading) {
-            CircularProgressIndicator()
-        }
-
-        if (state.value.user == null && state.value.isLoading.not()) {
-            Button(onClick = onSignInButtonClicked) {
-                Text(text = "Sign in")
             }
         }
     }

@@ -6,8 +6,12 @@ import kotlinx.datetime.*
 
 class ApiDataSource(private val stravaApi: StravaApi) {
 
-    suspend fun getUser(accessToken: String, refreshToken: String): User =
-        stravaApi.getAthlete().toUser(accessToken, refreshToken)
+    suspend fun getUser(accessToken: String, refreshToken: String): User = runCatching {
+        stravaApi.getAthlete()
+    }.fold(
+        onSuccess = { athlete -> athlete.toUser(accessToken, refreshToken) },
+        onFailure = { throw NotAvailableException(it.message) }
+    )
 
     // TODO: PAGING is missing!
     suspend fun getRuns(): List<Run> = runCatching {

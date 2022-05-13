@@ -87,7 +87,9 @@ class StravaApi(
     }
 
     private suspend fun <T> HttpRequestBuilder.execute(okBlock: suspend HttpResponse.() -> T): T =
-        httpClient.request(this).handle(this, okBlock)
+        httpClient
+            .request(this)
+            .handle(this, okBlock)
 
     private suspend fun <T> HttpResponse.handle(
         httpRequest: HttpRequestBuilder,

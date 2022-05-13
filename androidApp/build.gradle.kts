@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -34,6 +35,18 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = AndroidX.Compose.version
     }
+
+    applicationVariants.all {
+        kotlin.sourceSets {
+            getByName(name) {
+                kotlin.srcDir("build/generated/ksp/$name/kotlin")
+            }
+        }
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }
 
 dependencies {
@@ -58,9 +71,21 @@ dependencies {
         implementation(coilCompose)
     }
 
+    with(Google.Accompanist) {
+        implementation(swiperefresh)
+        implementation(systemuicontroller)
+    }
+
     with(Koin) {
         implementation(core)
-        implementation(android)
+        implementation(androidxCompose)
         testImplementation(test)
     }
+
+    with(KotlinX) {
+        compileOnly(datetime) // needed for run.startDate
+    }
+
+    implementation("io.github.raamcosta.compose-destinations:core:1.5.2-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.5.2-beta")
 }

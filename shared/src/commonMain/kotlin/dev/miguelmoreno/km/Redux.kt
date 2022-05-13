@@ -9,14 +9,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-interface AbsAction<State> {
+interface BaseAction<State> {
     fun reduce(state: State): State
     suspend fun effect() {}
 }
 
 typealias Dispatch<Action> = (action: Action) -> Unit
 
-fun interface Middleware<State, Action : AbsAction<State>> {
+fun interface Middleware<State, Action : BaseAction<State>> {
     operator fun invoke(
         state: State,
         action: Action,
@@ -25,11 +25,11 @@ fun interface Middleware<State, Action : AbsAction<State>> {
     ): Action
 }
 
-fun interface Next<State, Action : AbsAction<State>> {
+fun interface Next<State, Action : BaseAction<State>> {
     operator fun invoke(state: State, action: Action, dispatch: Dispatch<Action>): Action
 }
 
-class Store<State, Action : AbsAction<State>>(
+open class BaseStore<State, Action : BaseAction<State>>(
     initialState: State,
     private val middleware: List<Middleware<State, Action>> = emptyList()
 ) {

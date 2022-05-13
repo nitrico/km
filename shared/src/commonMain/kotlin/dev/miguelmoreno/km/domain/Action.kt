@@ -1,7 +1,6 @@
 package dev.miguelmoreno.km.domain
 
-import dev.miguelmoreno.km.AbsAction
-import dev.miguelmoreno.km.Store
+import dev.miguelmoreno.km.BaseAction
 import dev.miguelmoreno.km.data.Run
 import dev.miguelmoreno.km.data.RunsRepository
 import dev.miguelmoreno.km.data.User
@@ -11,8 +10,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 
-interface Action : AbsAction<State>, KoinComponent {
-    val store: Store<State, Action>
+interface Action : BaseAction<State>, KoinComponent {
+    val store: Store
         get() = get()
 }
 

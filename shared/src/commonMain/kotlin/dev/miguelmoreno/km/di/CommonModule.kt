@@ -1,17 +1,19 @@
 package dev.miguelmoreno.km.di
 
-import dev.miguelmoreno.km.Store
 import dev.miguelmoreno.km.data.RunsRepository
 import dev.miguelmoreno.km.data.UserRepository
 import dev.miguelmoreno.km.data.source.api.ApiDataSource
 import dev.miguelmoreno.km.data.source.api.StravaApi
 import dev.miguelmoreno.km.data.source.api.UserAccountStore
-import dev.miguelmoreno.km.domain.LoggerMiddleware
-import dev.miguelmoreno.km.domain.State
+import dev.miguelmoreno.km.data.source.db.DbDataSource
+import dev.miguelmoreno.km.data.source.db.RunDbModel
+import dev.miguelmoreno.km.domain.Store
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -32,9 +34,11 @@ fun commonModule(enableNetworkLogs: Boolean) = module {
     single { UserAccountStore(settings = get()) }
     single { StravaApi(httpClient = get(), userAccountStore = get()) }
     single { ApiDataSource(stravaApi = get())}
+    single { realm() }
+    single { DbDataSource(realm = get()) }
     single { UserRepository(apiDataSource = get(), userAccountStore = get()) }
-    single { RunsRepository(apiDataSource = get()) }
-    single { store() }
+    single { RunsRepository(apiDataSource = get(), dbDataSource = get()) }
+    single { Store() }
 }
 
 private fun httpClient(enableNetworkLogs: Boolean) =
@@ -53,11 +57,9 @@ private fun httpClient(enableNetworkLogs: Boolean) =
         }
     }
 
-private fun store() = Store(
-    initialState = State(),
-    middleware = listOf(
-        LoggerMiddleware()
-    )
-)
+private fun realm(): Realm {
+    val config = RealmConfiguration.with(schema = setOf(RunDbModel::class))
+    return Realm.open(config)
+}
 
 expect fun platformModule(): Module

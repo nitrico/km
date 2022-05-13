@@ -8,6 +8,7 @@ plugins {
     id("com.android.library")
     id("com.codingfeline.buildkonfig")
     id("com.github.ben-manes.versions") // ./gradlew dependencyUpdates -Drevision=release
+    id("io.realm.kotlin") version Realm.version
 }
 
 // CocoaPods requires the podspec to have a version.
@@ -42,6 +43,7 @@ kotlin {
                     implementation(clientSerialization)
                     implementation(serializationKotlinXJson)
                 }
+                implementation(Realm.libraryBase)
                 api(TouchLab.kermit)
                 implementation(TouchLab.MultiplatformSettings.multiplatformSettings)
             }

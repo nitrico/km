@@ -5,6 +5,7 @@ pluginManagement {
         kotlin("multiplatform") version kotlinVersion
         kotlin("native.cocoapods") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
+        id("com.google.devtools.ksp") version "1.6.21-1.0.5"
     }
     repositories {
         google()

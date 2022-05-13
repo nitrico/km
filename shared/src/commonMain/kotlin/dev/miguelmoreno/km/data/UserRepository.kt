@@ -1,5 +1,6 @@
 package dev.miguelmoreno.km.data
 
+import co.touchlab.kermit.Logger
 import dev.miguelmoreno.km.data.source.api.ApiDataSource
 import dev.miguelmoreno.km.data.source.api.UserAccountStore
 import kotlin.jvm.JvmInline
@@ -8,17 +9,18 @@ class UserRepository(
     private val apiDataSource: ApiDataSource,
     private val userAccountStore: UserAccountStore
 ) {
+    private val logger = Logger.withTag("UserRepository")
+
     suspend fun getUser(): User? {
         var user = userAccountStore.user
-        //try {
         if (user != null) {
-            // refresh
-            user = apiDataSource.getUser(user.accessToken.value, user.refreshToken.value)
-            userAccountStore.save(user)
+            try { // refresh
+                user = apiDataSource.getUser(user.accessToken.value, user.refreshToken.value)
+                userAccountStore.save(user)
+            } catch (exception: ApiDataSource.NotAvailableException) {
+                logger.e("Connection failed, using local user data.\n" + exception.message)
+            }
         }
-        //} catch (exception: Exception) {
-
-        //}
         return user
     }
 }
